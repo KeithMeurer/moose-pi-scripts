@@ -57,7 +57,7 @@ do
           break
           ;;
       -*)
-          echo "$0: invalid option -- '$1'" >&2
+          echo "$0: invalid option: '$1'" >&2
           echo "Try '$0 --help' for more information" >&2
           exit 1
           ;;
