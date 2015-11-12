@@ -119,21 +119,21 @@ do
 done
 
 if [ ! -z "$ABSSTART" ]; then
-	SUNRISE_EPOCH=$(date -d "$ABSSTART" +%s)
+    SUNRISE_EPOCH=$(date -d "$ABSSTART" +%s)
 else
-	SUNRISE=`curl -s http://weather.yahooapis.com/forecastrss?w=$YAHOOLOCATIONCODE|grep astronomy| awk -F\" '{print $2}'`
-	SUNRISE_EPOCH=$(date -d "$SUNRISE" +%s)
-	echo "$SUNRISE is sunrise"
-	SUNRISE_EPOCH=$((SUNRISE_EPOCH-BEFORESUNRISE)) # some interval before sunrise
+    SUNRISE=`curl -s http://weather.yahooapis.com/forecastrss?w=$YAHOOLOCATIONCODE|grep astronomy| awk -F\" '{print $2}'`
+    SUNRISE_EPOCH=$(date -d "$SUNRISE" +%s)
+    echo "$SUNRISE is sunrise"
+    SUNRISE_EPOCH=$((SUNRISE_EPOCH-BEFORESUNRISE)) # some interval before sunrise
 fi
 
 if [ ! -z "$ABSEND" ]; then
-	SUNSET_EPOCH=$(date -d "$ABSEND" +%s)
+    SUNSET_EPOCH=$(date -d "$ABSEND" +%s)
 else
-	SUNSET=`curl -s http://weather.yahooapis.com/forecastrss?w=$YAHOOLOCATIONCODE|grep astronomy| awk -F\" '{print $4}'`
-	SUNSET_EPOCH=$(date -d "$SUNSET" +%s)
-	echo "$SUNSET is sunset"
-	SUNSET_EPOCH=$((SUNSET_EPOCH+AFTERSUNSET)) # some interval past sunset
+    SUNSET=`curl -s http://weather.yahooapis.com/forecastrss?w=$YAHOOLOCATIONCODE|grep astronomy| awk -F\" '{print $4}'`
+    SUNSET_EPOCH=$(date -d "$SUNSET" +%s)
+    echo "$SUNSET is sunset"
+    SUNSET_EPOCH=$((SUNSET_EPOCH+AFTERSUNSET)) # some interval past sunset
 fi
 
 UNTIL=$(date -d @"$SUNRISE_EPOCH")
@@ -158,47 +158,47 @@ echo "Going to run about $HOURS hours, exactly $MILLISECS milliseconds"
 echo "Interval: $SECSBETWEENFRAMES seconds or $MSFRMS milliseconds"
 
 if [ ! -z "$TESTONLY" ]; then
-	echo 'Running is test only mode.'
-	echo ''
-	echo 'Variables:'
-	echo "    FOLDER:            $FOLDER"
-	echo "    SECSBETWEENFRAMES: $SECSBETWEENFRAMES"
-	echo "    FPS:               $FPS"
-	echo "    BEFORESUNRISE:     $BEFORESUNRISE"
-	echo "    AFTERSUNSET:       $AFTERSUNSET"
-	echo "    TESTONLY:          $TESTONLY"
-	echo "    YAHOOLOCATIONCODE: $YAHOOLOCATIONCODE"
-	echo "    ABSSTART:          $ABSSTART"
-	echo "    ABSEND:            $ABSEND"
-	echo "    REMOVEJPEGS:       $REMOVEJPEGS"
-	echo "    VWIDTH:            $VWIDTH"
-	echo "    VHEIGHT:           $VHEIGHT"
-	echo ""
-	echo "    START:             $UNTIL"
-	echo "    END:               $ENDTIME"
-	echo "    OUTFILE:           $OUTFILE"
-	echo "    LOGFILE:           $LOGFILE"
-	echo "    CURRENT_EPOCH:     $CURRENT_EPOCH"
-	echo "    SLEEP_SECS:        $SLEEP_SECS"
-	echo ""
-	echo "taking a sample pic with cam and then exiting."
-	echo "Attempting cam test - creating $FOLDER/camtest.jpg."
-	raspistill -o "$FOLDER/camtest.jpg"
-	exit 0
+    echo 'Running is test only mode.'
+    echo ''
+    echo 'Variables:'
+    echo "    FOLDER:            $FOLDER"
+    echo "    SECSBETWEENFRAMES: $SECSBETWEENFRAMES"
+    echo "    FPS:               $FPS"
+    echo "    BEFORESUNRISE:     $BEFORESUNRISE"
+    echo "    AFTERSUNSET:       $AFTERSUNSET"
+    echo "    TESTONLY:          $TESTONLY"
+    echo "    YAHOOLOCATIONCODE: $YAHOOLOCATIONCODE"
+    echo "    ABSSTART:          $ABSSTART"
+    echo "    ABSEND:            $ABSEND"
+    echo "    REMOVEJPEGS:       $REMOVEJPEGS"
+    echo "    VWIDTH:            $VWIDTH"
+    echo "    VHEIGHT:           $VHEIGHT"
+    echo ""
+    echo "    START:             $UNTIL"
+    echo "    END:               $ENDTIME"
+    echo "    OUTFILE:           $OUTFILE"
+    echo "    LOGFILE:           $LOGFILE"
+    echo "    CURRENT_EPOCH:     $CURRENT_EPOCH"
+    echo "    SLEEP_SECS:        $SLEEP_SECS"
+    echo ""
+    echo "taking a sample pic with cam and then exiting."
+    echo "Attempting cam test - creating $FOLDER/camtest.jpg."
+    raspistill -o "$FOLDER/camtest.jpg"
+    exit 0
 fi
 
 
 
 if [ -f "$LOGFILE" ]; then
-	rm "$LOGFILE"
+    rm "$LOGFILE"
 fi
 
 if [ -f "$OUTFILE" ]; then
-	rm "$OUTFILE"
+    rm "$OUTFILE"
 fi
 
 if [ "$SLEEP_SECS" -gt 0 ]; then
-	echo "Waiting until $UNTIL"
+    echo "Waiting until $UNTIL"
 fi
 
 (       trap "" HUP
