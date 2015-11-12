@@ -12,6 +12,7 @@ The idea here will be to have a script to install and configure anything.
 Scripts:
 <ul>
 <li>mariadb.setup.sh - setup of mariadb including network access and one additional user.</li>
+<li>timelapse.sh - flexible timelapse script to generate timelapse movies with a picam.</li>
 
 </ul>
 
