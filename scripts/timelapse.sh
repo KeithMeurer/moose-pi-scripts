@@ -6,9 +6,9 @@
 #               then mencoder to encode to an AVI video.
 #
 #               To get location code, go to http://weather.yahoo.com/ and search for zip or city.
-#				hit search weather and read your location code off the end of the URL it gives you.
+#               hit search and read your location code off the end of the URL it gives you.
 #
-#               For instance, Portland, OR give you a URL of 
+#               For instance, Portland, OR gives you a URL of 
 #                   https://weather.yahoo.com/united-states/oregon/portland-2475687/
 #                 The location code is the 2475687 at the end.
 
@@ -55,7 +55,7 @@ do
           # no shifting needed here, we're done.
           exit 0
           ;;
-	  -a | --after)
+      -a | --after)
           AFTERSUNSET="$2" # seconds after sunset.
           shift 2
           ;;
@@ -67,42 +67,42 @@ do
           FOLDER="$2" # folder to use for images and video.
           shift 2
           ;;
-	  -l | --location)
+      -l | --location)
           YAHOOLOCATIONCODE="$2" # Yahoo location code for sunrise/sunset.
           shift 2
           ;;
-	  -r | --remove)
+      -r | --remove)
           REMOVEJPEGS="removejpegs" # Remove JPEGS when done with timelapse
-		  shift
+          shift
           ;;
-	  -s | --secs)
+      -s | --secs)
           SECSBETWEENFRAMES="$2" # seconds to wait between frames.
           shift 2
           ;;
-	  -t | --test)
+      -t | --test)
           TESTONLY="testonly" # Test Only, tests SUNRISE/SUNSET and cam.
-		  shift
+          shift
           ;;  
-	  --fps)
+      --fps)
           FPS="$2" # video frames per second.
           shift 2
-          ;;		  
-	  --start)
+          ;;
+      --start)
           ABSSTART="$2" # Start time to override sunrise
           shift 2
-          ;;	
-	  --end)
+          ;;
+      --end)
           ABSEND="$2" # Start time to override sunrise
           shift 2
-          ;;			  
-	  --width)
+          ;;
+      --width)
           VWIDTH="$2" # width of video in pixels
           shift 2
-          ;;	
-	  --height)
+          ;;
+      --height)
           VHEIGHT="$2" # height of video in pixels.
           shift 2
-          ;;		
+          ;;
       --) # End of all options
           shift
           break
@@ -216,7 +216,7 @@ fi
         ls $FOLDER/tl*.jpg > $FOLDER/frames.txt
         mencoder -nosound -ovc lavc -lavcopts vcodec=mpeg4:aspect=16/9:vbitrate=8000000 -vf scale=$VWIDTH:$VHEIGHT -o $OUTFILE -mf type=jpeg:fps=$FPS mf://@$FOLDER/frames.txt
         rm $FOLDER/frames.txt
-		if [ ! -z "$REMOVEJPEGS" ]; then
-			rm $FOLDER/tl*.jpg
-		fi 	) & disown
+        if [ ! -z "$REMOVEJPEGS" ]; then
+            rm $FOLDER/tl*.jpg
+        fi  ) & disown
 echo "Timelapse Running as pid $!" >&2
