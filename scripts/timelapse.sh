@@ -31,6 +31,42 @@ echo "      --width WIDTH         width of video in pixels. 1920 is default."
 echo "      --height HEIGHT       height of video in pixels. 1080 is default."
 echo "  -h, --help                display this help and exit"
 echo ""
+echo ""
+echo "raspistill related options. these are passed directly through to raspistill."
+echo ""
+echo "-sh, --sharpness            set image sharpness (-100 to 100)"
+echo "-co, --contrast             set image contrast (-100 to 100)"
+echo "-br, --brightness           set image brightness (0 to 100)"
+echo "-sa, --saturation           set image saturation (-100 to 100)"
+echo "-ISO, --ISO                 set capture ISO"
+echo "-vs, --vstab                turn on video stabilisation"
+echo "-ev, --ev                   set EV compensation"
+echo "-ex, --exposure             set exposure mode (see Notes)"
+echo "-awb, --awb                 set AWB mode (see Notes)"
+echo "-mm, --metering             set metering mode (see Notes)"
+echo "-rot, --rotation            set image rotation (0-359)"
+echo "-hf, --hflip                set horizontal flip"
+echo "-vf, --vflip                set vertical flip"
+echo "-ss, --shutter              set shutter speed in microseconds"
+echo "-drc, --drc                 set DRC Level"
+echo "-st, --stats                force recomputation of statistics on stills capture pass"
+echo ""
+echo "Notes"
+echo ""
+echo "Exposure mode options:"
+echo "    off,auto,night,nightpreview,backlight,spotlight,sports,"
+echo "    snow,beach,verylong,fixedfps,antishake,fireworks"
+echo ""
+echo "AWB mode options:"
+echo "    off,auto,sun,cloud,shade,tungsten,fluorescent,incandescent,flash,horizon"
+echo ""
+echo "Metering Mode options:"
+echo "    average,spot,backlit,matrix"
+echo ""
+echo "Dynamic Range Compression (DRC) options:"
+echo "    off,low,med,high"
+echo ""
+
 }
 
 # declare variables we expect to fill with some sane defaults.
@@ -46,6 +82,23 @@ ABSEND=''
 REMOVEJPEGS=''
 VWIDTH=1920
 VHEIGHT=1080
+
+RSPISHARP=''
+RSPICONTRAST=''
+RSPIBRIGHT=''
+RSPISAT=''
+RSPIISO=''
+RSPIVS=''
+RSPIEV=''
+RSPIEX=''
+RSPIAWB=''
+RSPIMM=''
+RSPIROT=''
+RSPIHF=''
+RSPIVF=''
+RSPISHUT=''
+RSPIDRC=''
+RSPISTATS=''
 
 while :
 do
@@ -103,6 +156,76 @@ do
           VHEIGHT="$2" # height of video in pixels.
           shift 2
           ;;
+
+#raspistill specific options here.
+
+      -sh | --sharpness)
+          RSPISHARP="$2" # set image sharpness (-100 to 100)
+          shift 2
+          ;;
+      -co | --contrast)
+          RSPICONTRAST="$2" # set image contrast (-100 to 100)
+          shift 2
+          ;;
+      -br | --brightness)
+          RSPIBRIGHT="$2" # set image brightness (0 to 100)
+          shift 2
+          ;;
+      -sa | --saturation)
+          RSPISAT="$2" # set image saturation (-100 to 100)
+          shift 2
+          ;;
+      --ISO | --ISO)
+          RSPIISO="$2" # set capture ISO (100 to 800)
+          shift 2
+          ;;
+      -vs | --vstab)
+          RSPIVS="-vs" # turn on video stabilisation
+          shift
+          ;;  
+      -hf | --hflip)
+          RSPIHF="-hf" # set horizontal flip
+          shift
+          ;;  
+      -vf | --vflip)
+          RSPIVF="-vf" # set vertical flip
+          shift
+          ;;  
+      -st | --stats)
+          RSPISTATS="-st" # force recomputation of statistics on stills capture pass
+          shift
+          ;;  
+      -ev | --ev)
+          RSPIEV="$2" # set EV compensation
+          shift 2
+          ;;
+      -ex | --exposure)
+          RSPIEX="$2" # set exposure mode (see Notes)
+          shift 2
+          ;;
+      -awb | --awb)
+          RSPIAWB="$2" # set AWB mode (see Notes)
+          shift 2
+          ;;
+      -mm | --metering)
+          RSPIMM="$2" # set metering mode (see Notes)
+          shift 2
+          ;;
+      -rot | --rotation)
+          RSPIROT="$2" # set image rotation (0-359)
+          shift 2
+          ;;
+      -ss | --shutter)
+          RSPISHUT="$2" # set shutter speed in microseconds
+          shift 2
+          ;;
+      -drc | --drc)
+          RSPIDRC="$2" # set DRC Level
+          shift 2
+          ;;
+
+#end raspistill  specific options
+
       --) # End of all options
           shift
           break
@@ -117,6 +240,116 @@ do
           ;;
     esac
 done
+
+if [ ! -z "$RSPISHARP" ]; then
+	if [[ "$RSPISHARP" =~ ^-?[0-9]+$ ]] && [ "$RSPISHARP" -ge -100 -a "$RSPISHARP" -le 100 ]; then 
+	  RSPISHARP = "-sh $RSPISHARP"
+	else
+	  RSPISHARP = ''
+	  echo 'Invalid raspistill sharpness. (must be -100 to 100)'
+	fi
+fi
+
+if [ ! -z "$RSPICONTRAST" ]; then
+	if [[ "$RSPICONTRAST" =~ ^-?[0-9]+$ ]] && [ "$RSPICONTRAST" -ge -100 -a "$RSPICONTRAST" -le 100 ]; then 
+	  RSPICONTRAST = "-co $RSPICONTRAST"
+	else
+	  RSPICONTRAST = ''
+	  echo 'Invalid raspistill contrast. (must be -100 to 100)'
+	fi
+fi
+
+if [ ! -z "$RSPIBRIGHT" ]; then
+	if [[ "$RSPIBRIGHT" =~ ^[0-9]+$ ]] && [ "$RSPIBRIGHT" -ge 0 -a "$RSPIBRIGHT" -le 100 ]; then 
+	  RSPIBRIGHT = "-br $RSPIBRIGHT"
+	else
+	  RSPIBRIGHT = ''
+	  echo 'Invalid raspistill brightness. (must be 0 to 100)'
+	fi
+fi
+
+if [ ! -z "$RSPISAT" ]; then
+	if [[ "$RSPISAT" =~ ^-?[0-9]+$ ]] && [ "$RSPISAT" -ge -100 -a "$RSPISAT" -le 100 ]; then 
+	  RSPISAT = "-sa $RSPISAT"
+	else
+	  RSPISAT = ''
+	  echo 'Invalid raspistill saturation. (must be -100 to 100)'
+	fi
+fi
+
+if [ ! -z "$RSPIISO" ]; then
+	if [[ "$RSPIISO" =~ ^[0-9]+$ ]] && [ "$RSPIISO" -ge 100 -a "$RSPIISO" -le 800 ]; then 
+	  RSPIISO = "-ISO $RSPIISO"
+	else
+	  RSPIISO = ''
+	  echo 'Invalid raspistill ISO. (must be 100 to 800)'
+	fi
+fi
+
+if [ ! -z "$RSPIEV" ]; then
+	if [[ "$RSPIEV" =~ ^-?[0-9]+$ ]] && [ "$RSPIEV" -ge -10 -a "$RSPIEV" -le 10 ]; then 
+	  RSPIEV = "-ev $RSPIEV"
+	else
+	  RSPIEV = ''
+	  echo 'Invalid raspistill EV compensation. (must be -10 to 10)'
+	fi
+fi
+
+if [ ! -z "$RSPISHUT" ]; then
+	if [[ "$RSPISHUT" =~ ^[0-9]+$ ]] && [ "$RSPISHUT" -ge 1 -a "$RSPISHUT" -le 6000000 ]; then 
+	  RSPISHUT = "-ss $RSPISHUT"
+	else
+	  RSPISHUT = ''
+	  echo 'Invalid raspistill shutter speed. (must be 1 to 6000000)'
+	fi
+fi
+
+if [ ! -z "$RSPIEX" ]; then
+	if [ "$RSPIEX" == "auto" -o "$RSPIEX" == "night" -o "$RSPIEX" == "nightpreview" \
+		 -o "$RSPIEX" == "backlight" -o "$RSPIEX" == "spotlight" -o "$RSPIEX" == "sports" \
+		 -o "$RSPIEX" == "snow" -o "$RSPIEX" == "beach" -o "$RSPIEX" == "verylong" \
+		 -o "$RSPIEX" == "fixedfps" -o "$RSPIEX" == "antishake" -o "$RSPIEX" == "fireworks" ]; then 
+	  RSPIEX = "-ex $RSPIEX"
+	else
+	  RSPIEX = ''
+	  echo 'Invalid raspistill exposure mode. must be one of the following:'
+	  echo '      auto | night | nightpreview | backlight | spotlight | sports | snow |'
+	  echo '      beach | verylong | fixedfps | antishake | fireworks'
+	fi
+fi
+
+if [ ! -z "$RSPIAWB" ]; then
+	if [ "$RSPIAWB" == "off" -o "$RSPIEX" == "auto" -o "$RSPIEX" == "sun" \
+		 -o "$RSPIEX" == "cloud" -o "$RSPIEX" == "shade" -o "$RSPIEX" == "tungsten" \
+		 -o "$RSPIEX" == "fluorescent" -o "$RSPIEX" == "incandescent" -o "$RSPIEX" == "flash" \
+		 -o "$RSPIEX" == "horizon" ]; then 
+	  RSPIAWB = "-awb $RSPIAWB"
+	else
+	  RSPIAWB = ''
+	  echo 'Invalid raspistill white balance mode. must be one of the following:'
+	  echo '      off | auto | sun | cloud | shade | tungsten | fluorescent |'
+	  echo '      incandescent | flash | horizon '
+	fi
+
+	if [ ! -z "$RSPIMM" ]; then
+	if [ "$RSPIMM" == "average" -o "$RSPIMM" == "spot" -o "$RSPIMM" == "backlit" \
+		 -o "$RSPIMM" == "matrix" ]; then 
+	  RSPIMM = "-mm $RSPIMM"
+	else
+	  RSPIMM = ''
+	  echo 'Invalid raspistill metering mode. must be one of the following:'
+	  echo '      average | spot | backlit | matrix'
+	fi
+
+	if [ ! -z "$RSPIDRC" ]; then
+	if [ "$RSPIDRC" == "off" -o "$RSPIDRC" == "low" -o "$RSPIDRC" == "medium" \
+		 -o "$RSPIDRC" == "high" ]; then 
+	  RSPIDRC = "-mm $RSPIDRC"
+	else
+	  RSPIDRC = ''
+	  echo 'Invalid raspistill dynamic range compression mode. must be one of the following:'
+	  echo '      off | low | medium | high'
+	fi
 
 if [ ! -z "$ABSSTART" ]; then
     SUNRISE_EPOCH=$(date -d "$ABSSTART" +%s)
@@ -135,6 +368,8 @@ else
     echo "$SUNSET is sunset"
     SUNSET_EPOCH=$((SUNSET_EPOCH+AFTERSUNSET)) # some interval past sunset
 fi
+
+
 
 UNTIL=$(date -d @"$SUNRISE_EPOCH")
 ENDTIME=$(date -d @"$SUNSET_EPOCH")
@@ -187,9 +422,27 @@ if [ ! -z "$TESTONLY" ]; then
     echo "    CURRENT_EPOCH:     $CURRENT_EPOCH"
     echo "    SLEEP_SECS:        $SLEEP_SECS"
     echo ""
+    echo "raspistill specific settings:"
+    echo "    SHARPNESS:        $RSPISHARP"
+    echo "    CONTRAST:         $RSPICONTRAST"
+    echo "    BRIGHTNESS:       $RSPIBRIGHT"
+    echo "    SATURATION:       $RSPISAT"
+    echo "    ISO:              $RSPIISO"
+    echo "    STABILIZATION:    $RSPIVS"
+    echo "    HORIZONTAL FLIP:  $RSPIHF"
+    echo "    VERTICAL FLIP:    $RSPIVF"
+    echo "    RECOMPUTE STATS:  $RSPISTATS"
+    echo "    EV COMPENSATION:  $RSPIEV"
+    echo "    EXPOSURE:         $RSPIEX"
+    echo "    AWB:              $RSPIAWB"
+    echo "    METERING:         $RSPIMM"
+    echo "    ROTATION:         $RSPIROT"
+    echo "    SHUTTER:          $RSPISHUT"
+    echo "    DRC:              $RSPIDRC"
+    echo ""
     echo "taking a sample pic with cam and then exiting."
     echo "Attempting cam test - creating $FOLDER/camtest.jpg."
-    raspistill -o "$FOLDER/camtest.jpg"
+    raspistill -w $VWIDTH -h $VHEIGHT -q 100 $RSPISHARP $RSPICONTRAST $RSPIBRIGHT $RSPISAT $RSPIISO $RSPIVS $RSPIHF $RSPIVF $RSPISTATS $RSPIEV $RSPIEX $RSPIAWB $RSPIMM $RSPIROT $RSPISHUT $RSPIDRC -o "$FOLDER/camtest.jpg"
     exit 0
 fi
 
@@ -218,7 +471,7 @@ fi
 
         echo "Starting now..."
         date
-        raspistill -w $VWIDTH -h $VHEIGHT -q 100 -o $FOLDER/tl%05d.jpg -t $MILLISECS -tl $MSFRMS
+        raspistill -w $VWIDTH -h $VHEIGHT -q 100 -o $FOLDER/tl%05d.jpg -t $MILLISECS -tl $MSFRMS $RSPISHARP $RSPICONTRAST $RSPIBRIGHT $RSPISAT $RSPIISO $RSPIVS $RSPIHF $RSPIVF $RSPISTATS $RSPIEV $RSPIEX $RSPIAWB $RSPIMM $RSPIROT $RSPISHUT $RSPIDRC
         ls $FOLDER/tl*.jpg > $FOLDER/frames.txt
         mencoder -nosound -ovc lavc -lavcopts vcodec=mpeg4:aspect=16/9:vbitrate=8000000 -vf scale=$VWIDTH:$VHEIGHT -o $OUTFILE -mf type=jpeg:fps=$FPS mf://@$FOLDER/frames.txt
         rm $FOLDER/frames.txt
