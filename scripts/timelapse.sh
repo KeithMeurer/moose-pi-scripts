@@ -135,7 +135,7 @@ do
       -t | --test)
           TESTONLY="testonly" # Test Only, tests SUNRISE/SUNSET and cam.
           shift
-          ;;  
+          ;;
       --fps)
           FPS="$2" # video frames per second.
           shift 2
@@ -175,26 +175,26 @@ do
           RSPISAT="$2" # set image saturation (-100 to 100)
           shift 2
           ;;
-      --ISO | --ISO)
+      -ISO | --ISO)
           RSPIISO="$2" # set capture ISO (100 to 800)
           shift 2
           ;;
       -vs | --vstab)
           RSPIVS="-vs" # turn on video stabilisation
           shift
-          ;;  
+          ;;
       -hf | --hflip)
           RSPIHF="-hf" # set horizontal flip
           shift
-          ;;  
+          ;;
       -vf | --vflip)
           RSPIVF="-vf" # set vertical flip
           shift
-          ;;  
+          ;;
       -st | --stats)
           RSPISTATS="-st" # force recomputation of statistics on stills capture pass
           shift
-          ;;  
+          ;;
       -ev | --ev)
           RSPIEV="$2" # set EV compensation
           shift 2
@@ -243,75 +243,72 @@ done
 
 if [ ! -z "$RSPISHARP" ]; then
 	if [[ "$RSPISHARP" =~ ^-?[0-9]+$ ]] && [ "$RSPISHARP" -ge -100 -a "$RSPISHARP" -le 100 ]; then 
-	  RSPISHARP = "-sh $RSPISHARP"
+	  RSPISHARP="-sh $RSPISHARP"
 	else
-	  RSPISHARP = ''
+	  RSPISHARP=''
 	  echo 'Invalid raspistill sharpness. (must be -100 to 100)'
 	fi
 fi
 
 if [ ! -z "$RSPICONTRAST" ]; then
 	if [[ "$RSPICONTRAST" =~ ^-?[0-9]+$ ]] && [ "$RSPICONTRAST" -ge -100 -a "$RSPICONTRAST" -le 100 ]; then 
-	  RSPICONTRAST = "-co $RSPICONTRAST"
+	  RSPICONTRAST="-co $RSPICONTRAST"
 	else
-	  RSPICONTRAST = ''
+	  RSPICONTRAST=''
 	  echo 'Invalid raspistill contrast. (must be -100 to 100)'
 	fi
 fi
 
 if [ ! -z "$RSPIBRIGHT" ]; then
 	if [[ "$RSPIBRIGHT" =~ ^[0-9]+$ ]] && [ "$RSPIBRIGHT" -ge 0 -a "$RSPIBRIGHT" -le 100 ]; then 
-	  RSPIBRIGHT = "-br $RSPIBRIGHT"
+	  RSPIBRIGHT="-br $RSPIBRIGHT"
 	else
-	  RSPIBRIGHT = ''
+	  RSPIBRIGHT=''
 	  echo 'Invalid raspistill brightness. (must be 0 to 100)'
 	fi
 fi
 
 if [ ! -z "$RSPISAT" ]; then
 	if [[ "$RSPISAT" =~ ^-?[0-9]+$ ]] && [ "$RSPISAT" -ge -100 -a "$RSPISAT" -le 100 ]; then 
-	  RSPISAT = "-sa $RSPISAT"
+	  RSPISAT="-sa $RSPISAT"
 	else
-	  RSPISAT = ''
+	  RSPISAT=''
 	  echo 'Invalid raspistill saturation. (must be -100 to 100)'
 	fi
 fi
 
 if [ ! -z "$RSPIISO" ]; then
 	if [[ "$RSPIISO" =~ ^[0-9]+$ ]] && [ "$RSPIISO" -ge 100 -a "$RSPIISO" -le 800 ]; then 
-	  RSPIISO = "-ISO $RSPIISO"
+	  RSPIISO="-ISO $RSPIISO"
 	else
-	  RSPIISO = ''
+	  RSPIISO=''
 	  echo 'Invalid raspistill ISO. (must be 100 to 800)'
 	fi
 fi
 
 if [ ! -z "$RSPIEV" ]; then
 	if [[ "$RSPIEV" =~ ^-?[0-9]+$ ]] && [ "$RSPIEV" -ge -10 -a "$RSPIEV" -le 10 ]; then 
-	  RSPIEV = "-ev $RSPIEV"
+	  RSPIEV="-ev $RSPIEV"
 	else
-	  RSPIEV = ''
+	  RSPIEV=''
 	  echo 'Invalid raspistill EV compensation. (must be -10 to 10)'
 	fi
 fi
 
 if [ ! -z "$RSPISHUT" ]; then
 	if [[ "$RSPISHUT" =~ ^[0-9]+$ ]] && [ "$RSPISHUT" -ge 1 -a "$RSPISHUT" -le 6000000 ]; then 
-	  RSPISHUT = "-ss $RSPISHUT"
+	  RSPISHUT="-ss $RSPISHUT"
 	else
-	  RSPISHUT = ''
+	  RSPISHUT=''
 	  echo 'Invalid raspistill shutter speed. (must be 1 to 6000000)'
 	fi
 fi
 
 if [ ! -z "$RSPIEX" ]; then
-	if [ "$RSPIEX" == "auto" -o "$RSPIEX" == "night" -o "$RSPIEX" == "nightpreview" \
-		 -o "$RSPIEX" == "backlight" -o "$RSPIEX" == "spotlight" -o "$RSPIEX" == "sports" \
-		 -o "$RSPIEX" == "snow" -o "$RSPIEX" == "beach" -o "$RSPIEX" == "verylong" \
-		 -o "$RSPIEX" == "fixedfps" -o "$RSPIEX" == "antishake" -o "$RSPIEX" == "fireworks" ]; then 
-	  RSPIEX = "-ex $RSPIEX"
+	if [ "$RSPIEX" == "auto" -o "$RSPIEX" == "night" -o "$RSPIEX" == "nightpreview" -o "$RSPIEX" == "backlight" -o "$RSPIEX" == "spotlight" -o "$RSPIEX" == "sports" -o "$RSPIEX" == "snow" -o "$RSPIEX" == "beach" -o "$RSPIEX" == "verylong" -o "$RSPIEX" == "fixedfps" -o "$RSPIEX" == "antishake" -o "$RSPIEX" == "fireworks" ]; then 
+	  RSPIEX="-ex $RSPIEX"
 	else
-	  RSPIEX = ''
+	  RSPIEX=''
 	  echo 'Invalid raspistill exposure mode. must be one of the following:'
 	  echo '      auto | night | nightpreview | backlight | spotlight | sports | snow |'
 	  echo '      beach | verylong | fixedfps | antishake | fireworks'
@@ -319,37 +316,45 @@ if [ ! -z "$RSPIEX" ]; then
 fi
 
 if [ ! -z "$RSPIAWB" ]; then
-	if [ "$RSPIAWB" == "off" -o "$RSPIEX" == "auto" -o "$RSPIEX" == "sun" \
-		 -o "$RSPIEX" == "cloud" -o "$RSPIEX" == "shade" -o "$RSPIEX" == "tungsten" \
-		 -o "$RSPIEX" == "fluorescent" -o "$RSPIEX" == "incandescent" -o "$RSPIEX" == "flash" \
-		 -o "$RSPIEX" == "horizon" ]; then 
-	  RSPIAWB = "-awb $RSPIAWB"
+	if [ "$RSPIAWB" == "off" -o "$RSPIAWB" == "auto" -o "$RSPIAWB" == "sun" -o "$RSPIAWB" == "cloud" -o "$RSPIAWB" == "shade" -o "$RSPIAWB" == "tungsten" -o "$RSPIAWB" == "fluorescent" -o "$RSPIAWB" == "incandescent" -o "$RSPIAWB" == "flash" -o "$RSPIAWB" == "horizon" ]; then 
+	  RSPIAWB="-awb $RSPIAWB"
 	else
-	  RSPIAWB = ''
+	  RSPIAWB=''
 	  echo 'Invalid raspistill white balance mode. must be one of the following:'
 	  echo '      off | auto | sun | cloud | shade | tungsten | fluorescent |'
 	  echo '      incandescent | flash | horizon '
 	fi
+fi
 
-	if [ ! -z "$RSPIMM" ]; then
-	if [ "$RSPIMM" == "average" -o "$RSPIMM" == "spot" -o "$RSPIMM" == "backlit" \
-		 -o "$RSPIMM" == "matrix" ]; then 
-	  RSPIMM = "-mm $RSPIMM"
+if [ ! -z "$RSPIMM" ]; then
+	if [ "$RSPIMM" == "average" -o "$RSPIMM" == "spot" -o "$RSPIMM" == "backlit" -o "$RSPIMM" == "matrix" ]; then 
+	  RSPIMM="-mm $RSPIMM"
 	else
-	  RSPIMM = ''
+	  RSPIMM=''
 	  echo 'Invalid raspistill metering mode. must be one of the following:'
 	  echo '      average | spot | backlit | matrix'
 	fi
+fi
 
-	if [ ! -z "$RSPIDRC" ]; then
-	if [ "$RSPIDRC" == "off" -o "$RSPIDRC" == "low" -o "$RSPIDRC" == "medium" \
-		 -o "$RSPIDRC" == "high" ]; then 
-	  RSPIDRC = "-mm $RSPIDRC"
+if [ ! -z "$RSPIDRC" ]; then
+	if [ "$RSPIDRC" == "off" -o "$RSPIDRC" == "low" -o "$RSPIDRC" == "medium" -o "$RSPIDRC" == "high" ]; then 
+	  RSPIDRC="-drc $RSPIDRC"
 	else
-	  RSPIDRC = ''
+	  RSPIDRC=''
 	  echo 'Invalid raspistill dynamic range compression mode. must be one of the following:'
 	  echo '      off | low | medium | high'
 	fi
+fi
+
+if [ ! -z "$RSPIROT" ]; then
+	if [[ "$RSPIROT" =~ ^[0-9]+$ ]] && [ "$RSPIROT" -ge 0 -a "$RSPIROT" -le 359 ]; then 
+	  RSPIROT="-rot $RSPIROT"
+	else
+	  RSPIROT=''
+	  echo 'Invalid raspistill rotation. (must be 0 to 359)'
+	fi
+fi
+
 
 if [ ! -z "$ABSSTART" ]; then
     SUNRISE_EPOCH=$(date -d "$ABSSTART" +%s)
@@ -445,8 +450,6 @@ if [ ! -z "$TESTONLY" ]; then
     raspistill -w $VWIDTH -h $VHEIGHT -q 100 $RSPISHARP $RSPICONTRAST $RSPIBRIGHT $RSPISAT $RSPIISO $RSPIVS $RSPIHF $RSPIVF $RSPISTATS $RSPIEV $RSPIEX $RSPIAWB $RSPIMM $RSPIROT $RSPISHUT $RSPIDRC -o "$FOLDER/camtest.jpg"
     exit 0
 fi
-
-
 
 if [ -f "$LOGFILE" ]; then
     rm "$LOGFILE"
