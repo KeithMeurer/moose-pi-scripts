@@ -425,6 +425,8 @@ if [ ! -z "$TESTONLY" ]; then
     echo "    OUTFILE:           $OUTFILE"
     echo "    LOGFILE:           $LOGFILE"
     echo "    CURRENT_EPOCH:     $CURRENT_EPOCH"
+    echo "    SUNRISE_EPOCH:     $SUNRISE_EPOCH"
+    echo "    SUNSET_EPOCH:      $SUNSET_EPOCH"
     echo "    SLEEP_SECS:        $SLEEP_SECS"
     echo ""
     echo "raspistill specific settings:"
