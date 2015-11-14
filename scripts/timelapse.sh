@@ -1,4 +1,4 @@
-#/bin/bash
+#!/bin/bash
 
 # timelapse.sh --- setup for picam timelapse, can even use sunrise/sunset
 
