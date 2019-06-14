@@ -76,10 +76,10 @@ FPS=30
 BEFORESUNRISE=0
 AFTERSUNSET=0
 TESTONLY=''
-YAHOOLOCATIONCODE=2475687 # Portland, OR, just because. Mine is 12798525
+LOCATION=97224 # Portland, OR, just because.
 ABSSTART=''
 ABSEND=''
-REMOVEJPEGS=''
+REMOVEJPEGS='removejpegs'
 VWIDTH=1920
 VHEIGHT=1080
 
@@ -93,7 +93,7 @@ RSPIEV=''
 RSPIEX=''
 RSPIAWB=''
 RSPIMM=''
-RSPIROT=''
+RSPIROT='180'
 RSPIHF=''
 RSPIVF=''
 RSPISHUT=''
@@ -121,7 +121,7 @@ do
           shift 2
           ;;
       -l | --location)
-          YAHOOLOCATIONCODE="$2" # Yahoo location code for sunrise/sunset.
+          LOCATION="$2" # Zip code for sunrise/sunset.
           shift 2
           ;;
       -r | --remove)
@@ -356,11 +356,17 @@ if [ ! -z "$RSPIROT" ]; then
 fi
 
 
+#raw data from weather.com
+SUNTIMES=$( curl -s  https://weather.com/weather/today/l/$LOCATION | sed 's/<span/\n/g' | sed 's/<\/span>/\n/g'  | grep -E "dp0-details-sunrise|dp0-details-sunset" | tr -d '\n' | sed 's/>/ /g' | cut -d " " -f 4,8 )
+# Extract sunrise and sunset times and convert to 24 hour format
+SUNRISE=$(date --date="`echo $SUNTIMES | awk '{ print $1}'` AM" +%s)
+SUNSET=$(date --date="`echo $SUNTIMES | awk '{ print $2}'` PM" +%s)
+
+
 if [ ! -z "$ABSSTART" ]; then
     SUNRISE_EPOCH=$(date -d "$ABSSTART" +%s)
 else
-    SUNRISE=`curl -s http://weather.yahooapis.com/forecastrss?w=$YAHOOLOCATIONCODE|grep astronomy| awk -F\" '{print $2}'`
-    SUNRISE_EPOCH=$(date -d "$SUNRISE" +%s)
+    SUNRISE_EPOCH=$SUNRISE
     echo "$SUNRISE is sunrise"
     SUNRISE_EPOCH=$((SUNRISE_EPOCH-BEFORESUNRISE)) # some interval before sunrise
 fi
@@ -368,8 +374,7 @@ fi
 if [ ! -z "$ABSEND" ]; then
     SUNSET_EPOCH=$(date -d "$ABSEND" +%s)
 else
-    SUNSET=`curl -s http://weather.yahooapis.com/forecastrss?w=$YAHOOLOCATIONCODE|grep astronomy| awk -F\" '{print $4}'`
-    SUNSET_EPOCH=$(date -d "$SUNSET" +%s)
+    SUNSET_EPOCH=$SUNSET
     echo "$SUNSET is sunset"
     SUNSET_EPOCH=$((SUNSET_EPOCH+AFTERSUNSET)) # some interval past sunset
 fi
@@ -394,7 +399,7 @@ MILLISECS=$((MILLISECS*1000))
 
 FILENAMEDATE=$(date +%Y.%m.%d)
 
-OUTFILE="$FOLDER/$FILENAMEDATE.timelapse.avi"
+OUTFILE="$FOLDER/$FILENAMEDATE.timelapse.mp4"
 LOGFILE="$FOLDER/$FILENAMEDATE.timelapse.log"
 
 MSFRMS=$((SECSBETWEENFRAMES*1000))
@@ -413,7 +418,7 @@ if [ ! -z "$TESTONLY" ]; then
     echo "    BEFORESUNRISE:     $BEFORESUNRISE"
     echo "    AFTERSUNSET:       $AFTERSUNSET"
     echo "    TESTONLY:          $TESTONLY"
-    echo "    YAHOOLOCATIONCODE: $YAHOOLOCATIONCODE"
+    echo "    LOCATION:          $LOCATION"
     echo "    ABSSTART:          $ABSSTART"
     echo "    ABSEND:            $ABSEND"
     echo "    REMOVEJPEGS:       $REMOVEJPEGS"
@@ -477,10 +482,10 @@ fi
         echo "Starting now..."
         date
         raspistill -w $VWIDTH -h $VHEIGHT -q 100 -o $FOLDER/tl%05d.jpg -t $MILLISECS -tl $MSFRMS $RSPISHARP $RSPICONTRAST $RSPIBRIGHT $RSPISAT $RSPIISO $RSPIVS $RSPIHF $RSPIVF $RSPISTATS $RSPIEV $RSPIEX $RSPIAWB $RSPIMM $RSPIROT $RSPISHUT $RSPIDRC
-        ls $FOLDER/tl*.jpg > $FOLDER/frames.txt
-        mencoder -nosound -ovc lavc -lavcopts vcodec=mpeg4:aspect=16/9:vbitrate=8000000 -vf scale=$VWIDTH:$VHEIGHT -o $OUTFILE -mf type=jpeg:fps=$FPS mf://@$FOLDER/frames.txt
-        rm $FOLDER/frames.txt
+         ffmpeg -i $FOLDER/tl%5d.jpg -vcodec h264 -r $FPS -acodec aac -strict -2 -s $VWIDTHx$VHEIGHT $OUTFILE
         if [ ! -z "$REMOVEJPEGS" ]; then
             rm $FOLDER/tl*.jpg
-        fi  ) & disown
+        fi
+	mv -v $OUTFILE /movies
+ ) & disown
 echo "Timelapse Running as pid $!" >&2
