@@ -482,7 +482,7 @@ fi
         echo "Starting now..."
         date
         raspistill -w $VWIDTH -h $VHEIGHT -q 100 -o $FOLDER/tl%05d.jpg -t $MILLISECS -tl $MSFRMS $RSPISHARP $RSPICONTRAST $RSPIBRIGHT $RSPISAT $RSPIISO $RSPIVS $RSPIHF $RSPIVF $RSPISTATS $RSPIEV $RSPIEX $RSPIAWB $RSPIMM $RSPIROT $RSPISHUT $RSPIDRC
-         ffmpeg -i $FOLDER/tl%5d.jpg -vcodec h264 -r $FPS -acodec aac -strict -2 -s $VWIDTHx$VHEIGHT $OUTFILE
+         ffmpeg -i $FOLDER/tl%05d.jpg -vcodec h264 -r $FPS -acodec aac -strict -2 -s $VWIDTHx$VHEIGHT $OUTFILE
         if [ ! -z "$REMOVEJPEGS" ]; then
             rm $FOLDER/tl*.jpg
         fi
